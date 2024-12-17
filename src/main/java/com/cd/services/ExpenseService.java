@@ -60,6 +60,8 @@ public class ExpenseService {
             return expenseRepository.findAllByUserIdAndCategoryIdAndExpenseDateIsAfter(user.getId(), categoryId, startDate);
         } else if (categoryId != 0 && endDate != null) {
             return expenseRepository.findAllByUserIdAndCategoryIdAndExpenseDateIsBefore(user.getId(), categoryId, endDate);
+        } else if (categoryId != 0) {
+            return expenseRepository.findAllByUserIdAndCategoryId(user.getId(), categoryId);
         }
         return expenseRepository.findAllByUserId(user.getId(), Sort.by("expenseDate").descending());
     }

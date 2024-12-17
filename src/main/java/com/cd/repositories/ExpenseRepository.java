@@ -32,4 +32,5 @@ public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
 
     List<Expense> findAllByUserIdAndExpenseDateIsBefore(@NotNull(message = "User cannot be null") int userId, @NotNull(message = "Expense date cannot be null or empty") LocalDate expenseDateBefore);
 
+    List<Expense> findAllByUserIdAndCategoryId(int id, int categoryId);
 }
