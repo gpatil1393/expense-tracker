@@ -9,6 +9,13 @@ import java.time.LocalDateTime;
 @Table(name = "expense_categories")
 public class ExpenseCategory {
 
+    public ExpenseCategory() {
+    }
+
+    public ExpenseCategory(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
