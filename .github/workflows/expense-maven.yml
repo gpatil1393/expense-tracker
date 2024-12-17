@@ -37,5 +37,4 @@ jobs:
     steps:
     - run: echo "deploying to external repo"
     - run: echo "Step1"
-    - run: echo "Step2"
-    - run: echo "Step3"
+
