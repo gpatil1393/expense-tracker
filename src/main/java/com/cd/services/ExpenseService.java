@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -43,6 +44,23 @@ public class ExpenseService {
     }
 
     public List<Expense> getAllExpensesByUser(User user) {
+        return expenseRepository.findAllByUserId(user.getId(), Sort.by("expenseDate").descending());
+    }
+
+    public List<Expense> getAllExpensesByUser(int categoryId, LocalDate startDate, LocalDate endDate, User user) {
+        if (categoryId != 0 && startDate != null && endDate != null) {
+            return expenseRepository.findAllByUserIdAndCategoryIdAndExpenseDateBetween(user.getId(), categoryId, startDate, endDate);
+        } else if (categoryId == 0 && startDate != null && endDate != null) {
+            return expenseRepository.findAllByUserIdAndExpenseDateBetween(user.getId(), startDate, endDate);
+        } else if (categoryId == 0 && startDate == null && endDate != null) {
+            return expenseRepository.findAllByUserIdAndExpenseDateIsBefore(user.getId(), endDate);
+        } else if (categoryId == 0 && startDate != null) {
+            return expenseRepository.findAllByUserIdAndExpenseDateIsAfter(user.getId(), startDate);
+        } else if (categoryId != 0 && endDate == null && startDate != null) {
+            return expenseRepository.findAllByUserIdAndCategoryIdAndExpenseDateIsAfter(user.getId(), categoryId, startDate);
+        } else if (categoryId != 0 && endDate != null) {
+            return expenseRepository.findAllByUserIdAndCategoryIdAndExpenseDateIsBefore(user.getId(), categoryId, endDate);
+        }
         return expenseRepository.findAllByUserId(user.getId(), Sort.by("expenseDate").descending());
     }
 

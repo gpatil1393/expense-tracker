@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 @CrossOrigin
@@ -43,8 +44,15 @@ public class ExpenseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Expense>> getExpenses(Authentication authentication) {
+    public ResponseEntity<List<Expense>> getExpenses(
+            @RequestParam(name = "categoryId", required = false, defaultValue = "0") int categoryId,
+            @RequestParam(name = "start", required = false) LocalDate startDate,
+            @RequestParam(name = "end", required = false) LocalDate endDate,
+            Authentication authentication) {
         User user = userService.findUserByUsername(((UserDetails) authentication.getPrincipal()).getUsername());
+        if (categoryId != 0 || startDate != null || endDate != null) {
+            return ResponseEntity.ok(expenseService.getAllExpensesByUser(categoryId, startDate, endDate, user));
+        }
         return ResponseEntity.ok(expenseService.getAllExpensesByUser(user));
     }
 
@@ -54,7 +62,7 @@ public class ExpenseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Expense> updateExpense(@PathVariable int id, @Valid @RequestBody Expense expense) {
+    public ResponseEntity<Expense> updateExpense(@PathVariable int id, @Valid @RequestBody Expense expense) throws ExpenseIDMismatchException {
         if (id != expense.getId()) {
             throw new ExpenseIDMismatchException("Expense ID mismatch!");
         }
